@@ -11,6 +11,7 @@ router.route('/').get((req, res) => {
 
 //create a post
 router.route('/add').post((req, res) => {
+    console.log('add post')
     const username = req.body.username
     const userId = req.body.userId
     const title = req.body.title

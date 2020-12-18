@@ -17,7 +17,7 @@ export const login = (username, password) => {
                 setInStorage('speak_your_mind', { token: response.data.token })
                 let token = response.data.token;
                 let userId = response.data.userId
-                dispatch(setLogin(token, userId))
+                dispatch(setLogin(token, userId, username))
             } else {
 
             }
@@ -25,12 +25,13 @@ export const login = (username, password) => {
     };
 }
 
-export const setLogin = (token, userId) => {
+export const setLogin = (token, userId, username) => {
     console.log(token, userId)
     return {
         type: actionTypes.SET_LOGIN,
         token: token,
-        userId: userId
+        userId: userId,
+        username: username
     };
 }
 

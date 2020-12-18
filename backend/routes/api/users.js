@@ -129,7 +129,7 @@ router.route('/login').post((req, res) => {
                 success: true,
                 message: 'Valid sign in',
                 token: doc._id,
-                userId: doc.userId
+                userId: doc.userId,
             })
         })
     })

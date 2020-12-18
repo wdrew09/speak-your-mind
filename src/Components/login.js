@@ -15,6 +15,7 @@ const Login = props => {
         axiosInstance.get('account/verify?token=' + props.token)
             .then(response => {
                 if (response.data.success) {
+                    console.log('go to post')
                     setGoToPosts(true)
                 } else {
                     console.log('error verifying account')
