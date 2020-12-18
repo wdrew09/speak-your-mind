@@ -22,6 +22,7 @@ const SignUp = () => {
                 .then(json => {
                     if (json.success) {
                         console.log('success')
+                        console.log(json)
                         setUsername('')
                         setPassword('')
                     } else {
@@ -31,6 +32,8 @@ const SignUp = () => {
                 })
         }
     }
+
+    console.log('hey')
 
     return (
         <div>

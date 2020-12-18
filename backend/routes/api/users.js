@@ -75,6 +75,7 @@ router.route('/login').post((req, res) => {
         username,
         password
     } = body
+    console.log(username, password)
 
     if (!username) {
         return res.send({
@@ -123,6 +124,7 @@ router.route('/login').post((req, res) => {
                 })
             }
 
+            console.log('worked')
             return res.send({
                 success: true,
                 message: 'Valid sign in',
@@ -136,6 +138,7 @@ router.route('/login').post((req, res) => {
 router.route('/logout').get((req, res) => {
     const { query } = req
     const { token } = query
+    console.log('logout')
     UserSession.findOneAndUpdate({
         _id: token,
         isDeleted: false
@@ -151,7 +154,8 @@ router.route('/logout').get((req, res) => {
                 message: 'Error: Server error'
             })
         }
-
+        console.log('good')
+        // localStorage.clear()
         return res.send({
             success: true,
             message: 'Good'
