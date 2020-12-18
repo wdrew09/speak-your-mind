@@ -124,11 +124,12 @@ router.route('/login').post((req, res) => {
                 })
             }
 
-            console.log('worked')
+            console.log(doc)
             return res.send({
                 success: true,
                 message: 'Valid sign in',
-                token: doc._id
+                token: doc._id,
+                userId: doc.userId
             })
         })
     })

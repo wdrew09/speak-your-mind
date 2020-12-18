@@ -1,41 +1,21 @@
 import React, { Component, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actionCreators from '../store/actions/index';
 
-import {
-    getFromStorage,
-    setInStorage
-} from '../utils/storage'
-
-const Navbar = () => {
+const Navbar = (props) => {
     const [goToLogin, setGoToLogin] = useState(false)
 
     const onLogout = () => {
-        let obj = getFromStorage('speak_your_mind')
-
-        if (obj && obj.token) {
-            let token = obj.token
-
-            fetch('http://localhost:5000/api/account/logout?token=' + token, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-                .then(res => res.json())
-                .then(json => {
-                    if (json.success) {
-                        localStorage.clear()
-                        setGoToLogin(true)
-                    } else {
-                        console.log('Error loggin out')
-                    }
-                })
+        props.logout()
+        if (props.token.length === 0) {
+            setGoToLogin(true)
         } else {
-            console.log('No token found')
+            console.log('logout error')
         }
     }
 
+    console.log('token length: ' + props.token.length)
     return (
         <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
             {goToLogin && <Redirect to='/' />}
@@ -49,7 +29,7 @@ const Navbar = () => {
                         <Link to="/posts" className="nav-link">posts</Link>
                     </li>
                     <li className="navbar-item">
-                        <button style={{height:'50px', width: '100px', color: 'blue'}} onClick={() => onLogout()}>Logout</button>
+                        <button style={{ height: '50px', width: '100px', color: 'blue' }} onClick={() => onLogout()}>Logout</button>
                     </li>
                 </ul>
             </div>
@@ -58,4 +38,15 @@ const Navbar = () => {
 
 }
 
-export default Navbar
+const mapStateToProps = (state) => ({
+    token: state.auth.token
+});
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(actionCreators.logout())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

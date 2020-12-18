@@ -2,12 +2,12 @@ import * as actionTypes from './actionTypes';
 import { axiosInstance } from '../../index';
 
 import {
-    setInStorage
+    setInStorage,
+    getFromStorage
 } from '../../utils/storage'
 
 export const login = (username, password) => {
     return dispatch => {
-        console.log('here 2')
         axiosInstance.post('account/login', {
             username: username,
             password: password,
@@ -15,32 +15,49 @@ export const login = (username, password) => {
             console.log(response)
             if (response.data.success) {
                 setInStorage('speak_your_mind', { token: response.data.token })
-                let token = response.token;
-                setLogin(token);
-                // dispatch(setAuth(token));
+                let token = response.data.token;
+                let userId = response.data.userId
+                dispatch(setLogin(token, userId))
             } else {
 
             }
-
         });
     };
 }
 
-export const setLogin = token => {
+export const setLogin = (token, userId) => {
+    console.log(token, userId)
     return {
         type: actionTypes.SET_LOGIN,
         token: token,
+        userId: userId
     };
 }
 
-// export const getToken = () => {
-//     return (dispatch, getState) => {
-//         let token = getState().auth.token;
+export const logout = () => {
+    return dispatch => {
+        let obj = getFromStorage('speak_your_mind')
 
-//         axiosInstance.get(`user/`, {
-//             // headers: {Authorization: token},            
-//         }).then(response => {
-//             dispatch(setMyTeamList(response.data));
-//         })
-//     };
-// }
+        if (obj && obj.token) {
+            let token = obj.token
+            axiosInstance.get('account/logout?token=' + token)
+                .then(response => {
+                    if (response.data.success) {
+                        localStorage.removeItem('speak_your_mind')
+                        dispatch(setLogout())
+                    } else {
+                        console.log('error')
+                    }
+                })
+        } else {
+            console.log('No token found')
+        }
+    }
+}
+
+export const setLogout = () => {
+    return {
+        type: actionTypes.LOGOUT,
+        token: '',
+    };
+}

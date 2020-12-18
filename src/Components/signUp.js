@@ -1,42 +1,32 @@
 import React, { useState } from 'react'
+import { axiosInstance } from '../index';
+import { Link, Redirect } from 'react-router-dom';
 
 const SignUp = () => {
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
+    const [goToLogin, setGoToLogin] = useState(false)
 
     const submit = () => {
         if (username && password && username.length > 3 && password.length > 6) {
-            console.log(username, password)
-
-            fetch('http://localhost:5000/api/account/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            })
-                .then(res => res.json())
-                .then(json => {
-                    if (json.success) {
-                        console.log('success')
-                        console.log(json)
-                        setUsername('')
-                        setPassword('')
-                    } else {
-                        console.log('failure')
-                        
-                    }
-                })
+            axiosInstance.post('account/create', {
+                username: username,
+                password: password,
+            }).then(response => {
+                if (response.data.success) {
+                    setUsername('')
+                    setPassword('')
+                    setGoToLogin(true)
+                } else {
+                    console.log('error creating account')
+                }
+            });
         }
     }
 
-    console.log('hey')
-
     return (
         <div>
+            {goToLogin && <Redirect to='/' />}
             username
             <input type="text" onChange={(e) => setUsername(e.target.value)} />
             <br />

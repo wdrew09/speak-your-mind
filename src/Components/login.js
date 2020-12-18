@@ -1,45 +1,37 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link, Redirect } from 'react-router-dom';
+import { axiosInstance } from '../index';
 
 import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
-import { login } from '../store/actions/index';
-
-
 
 const Login = props => {
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
+    const [goToPosts, setGoToPosts] = useState(false)
+
+    //If token can be verified then go to posts page
+    useEffect(() => {
+        axiosInstance.get('account/verify?token=' + props.token)
+            .then(response => {
+                if (response.data.success) {
+                    setGoToPosts(true)
+                } else {
+                    console.log('error verifying account')
+                }
+            });
+    }, [props.token])
+
 
     const submit = () => {
         if (username && password) {
-            // fetch('http://localhost:5000/api/account/login', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         username: username,
-            //         password: password
-            //     })
-            // })
-            //     .then(res => res.json())
-            //     .then(json => {
-            //         if (json.success) {
-            //             setInStorage('speak_your_mind', { token: json.token })
-            //             setUsername('')
-            //             setPassword('')
-            //         } else {
-            //             console.log('failure')
-            //         }
-            //     })
-            console.log('here 1')
             props.login(username, password)
         }
     }
 
-
     return (
         <div>
+            {goToPosts && <Redirect to='/posts' />}
             login
             username
             <input type="text" onChange={(e) => setUsername(e.target.value)} />
@@ -58,7 +50,7 @@ const Login = props => {
 
 const mapStateToProps = (state) => {
     return {
-        // error: state.auth.error,
+        token: state.auth.token
     };
 }
 
