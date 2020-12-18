@@ -5,7 +5,7 @@ const SignUp = () => {
     const [password, setPassword] = useState()
 
     const submit = () => {
-        if (username && password) {
+        if (username && password && username.length > 3 && password.length > 6) {
             console.log(username, password)
 
             fetch('http://localhost:5000/api/account/create', {
