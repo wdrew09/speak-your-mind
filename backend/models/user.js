@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    likesPosts: {
+    likedPosts: {
         type: Array,
         required: true
     },

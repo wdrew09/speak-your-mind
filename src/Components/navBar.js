@@ -4,6 +4,10 @@ import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
 import { axiosInstance } from '../index';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 const Navbar = (props) => {
     const [goToLogin, setGoToLogin] = useState(false)
     const [authorized, setAuthorized] = useState()
@@ -15,16 +19,25 @@ const Navbar = (props) => {
                 .then(response => {
                     if (response.data.success) {
                         setAuthorized(true)
+                        // props.setAlert('logged in', 'success')
                     } else {
-                        console.log('not authorized')
                         setAuthorized(false)
                     }
                 });
         } else {
-            console.log('not authorized')
             setAuthorized(false)
         }
     }, [props.token])
+
+    useEffect(() => {
+        if (props.style == 'success') {
+            toast.success(props.message)
+        } else if (props.style == 'error') {
+            toast.error(props.message)
+        } else if (props.style == 'info') {
+            toast.info(props.message)
+        }
+    }, [props.message])
 
     const onLogout = () => {
         props.logout()
@@ -35,11 +48,32 @@ const Navbar = (props) => {
         }
     }
 
-    console.log('token length: ' + props.token.length)
+
+    // const notify = (message, style) => {
+    //     if (style == 'success') {
+    //         return toast.success(message)
+    //     } else if (style == 'error') {
+    //         return toast.error(message)
+    //     } else if (style == 'info') {
+    //         return toast.info(message)
+    //     }
+    // }
+
     if (authorized === true) {
         return (
             <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
                 {goToLogin && <Redirect to='/' />}
+                <ToastContainer
+                    position="top-center"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
                 <Link to="/" className="navbar-brand">a</Link>
                 <div className="collpase navbar-collapse">
                     <ul className="navbar-nav mr-auto">
@@ -55,25 +89,31 @@ const Navbar = (props) => {
                         <li className="navbar-item">
                             <button style={{ height: '50px', width: '100px', color: 'blue' }} onClick={() => onLogout()}>Logout</button>
                         </li>
+                        {/* <li className="navbar-item">
+                            <button style={{ height: '50px', width: '100px', color: 'blue' }} onClick={() => notify()}>notify</button>
+                        </li> */}
                     </ul>
                 </div>
             </nav>
 
         );
     } else {
-        return (<div/>)
+        return (<div />)
     }
 
 }
 
 const mapStateToProps = (state) => ({
-    token: state.auth.token
+    token: state.auth.token,
+    message: state.alert.message,
+    style: state.alert.style
 });
 
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        logout: () => dispatch(actionCreators.logout())
+        logout: () => dispatch(actionCreators.logout()),
+        setAlert: (message, style) => dispatch(actionCreators.setAlert(message, style))
     }
 }
 

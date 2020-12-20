@@ -4,9 +4,11 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 import thunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth'
+import alertReducer from './store/reducers/alert'
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    alert: alertReducer
   })
 
 const persistConfig = { // configuration object for redux-persist

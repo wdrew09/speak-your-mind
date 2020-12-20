@@ -11,6 +11,7 @@ const CreatePost = (props) => {
 
     const submitPressed = () => {
         if (title && content) {
+            console.log(title, content, props.userId, props.username)
             axiosInstance.post('posts/add', {
                 title: title,
                 content: content,
@@ -18,13 +19,11 @@ const CreatePost = (props) => {
                 username: props.username
             })
                 .then(response => {
-                    console.log(response)
-                    // if (response.data.success) {
-                    //     console.log(success)
-                    // } else {
-                    //     console.log('not authorized')
-                    //     setAuthorized(false)
-                    // }
+                    if (response.data.success) {
+                        props.setAlert('Post Added!', 'success')
+                    } else {
+                        props.setAlert('Error Adding post...', 'error')
+                    }
                 });
         }
     }
@@ -47,7 +46,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        // login: (username, password) => dispatch(actionCreators.login(username, password))
+        setAlert: (message, style) => dispatch(actionCreators.setAlert(message, style))
     }
 }
 

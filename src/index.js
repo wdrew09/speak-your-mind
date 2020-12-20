@@ -8,7 +8,11 @@ import axios from 'axios';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
 
-import {store, persistor} from './configureStore'
+import { store, persistor } from './configureStore'
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export const BASE_URL = 'http://localhost:5000/api/';
 
@@ -26,6 +30,7 @@ export const axiosInstance = axios.create({
 
 ReactDOM.render(
   <Provider store={store}>
+    {/* <ToastContainer pauseOnFocusLoss={false} /> */}
     <PersistGate loading={null} persistor={persistor}>
       <App />
     </PersistGate>

@@ -16,6 +16,9 @@ import CreatePost from './Components/createPost';
 import * as actionCreators from './store/actions/index';
 import { connect } from 'react-redux';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App(props) {
   const [authorized, setAuthorized] = useState()
 
@@ -37,6 +40,8 @@ function App(props) {
       setAuthorized(false)
     }
   }, [props.token])
+
+
 
   console.log(authorized)
   return (

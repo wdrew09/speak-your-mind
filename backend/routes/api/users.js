@@ -180,7 +180,6 @@ router.route('/verify').get((req, res) => {
                 message: 'Error: Server error'
             })
         }
-        console.log("sessions:", sessions.length)
         if (sessions.length != 1) {
             return res.send({
                 success: false,
