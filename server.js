@@ -7,17 +7,10 @@ require('dotenv').config()
 
 const app = express()
 
-
 app.use(cors())
 app.use(express.json())
-// PRODUCTION
-let uri = ''
-if (process.env.NODE_ENV === 'production') {
-    // uri = process.env.PRODUCTION
-    uri = process.env.ATLAS_URI
-} else {
-   uri = process.env.ATLAS_URI
-}
+
+let uri = process.env.ATLAS_URI
 mongoose.connect(uri, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true})
 
 const connection = mongoose.connection

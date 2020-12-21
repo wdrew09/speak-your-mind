@@ -2,7 +2,6 @@ const router = require('express').Router()
 let Post = require('../../models/post')
 const UserSession = require('../../models/userSession')
 let User = require('../../models/user')
-const user = require('../../models/user')
 
 //Get all posts
 router.route('/').get((req, res) => {
@@ -42,6 +41,7 @@ router.route('/add').post((req, res) => {
 
 //Like a post
 router.route('/like/:id').patch((req, res) => {
+    console.log('like/:id')
     //Making sure user has session token
     let verified = verifyUser(req.body.token)
     if (!verified) {
@@ -61,57 +61,98 @@ router.route('/like/:id').patch((req, res) => {
             likedPosts = user.likedPosts
         })
 
-    //Finding like count for the post
+    //Finding like count for the post and then calling updateForLikes
     let likeCount = 0
     Post.findById(likedPost)
         .then(post => {
+            console.log('title', post.title)
             likeCount = post.likes
+            updateForLikes(likedPosts, likedPost, req.body.userId, likeCount, req, res)
         })
 
-    //Updating values in Post and User database
-    let arrayIndex = likedPosts.indexOf(likedPost)
-    // console.log('liked post', likedPost)
-    // console.log('liked posts', likedPosts)
-    console.log(likedPosts)
-    console.log(likedPost)
-    console.log('index', likedPosts.indexOf(likedPost))
-    if (likedPosts.indexOf(likedPost) < 0) {
-        Post.findByIdAndUpdate(likedPost, { likes: likeCount + 1 })
-        User.findByIdAndUpdate(req.body.userId, { likedPosts: [...likedPosts, likedPost] },
-            function (err, docs) {
-                if (err) {
-                    return res.send({
-                        success: false,
-                        message: 'Error: Server error'
-                    })
-                }
-                else {
-                    return res.send({
-                        success: true,
-                        message: 'Post Liked!'
-                    })
-                }
-            });
-    } else {
-        Post.findByIdAndUpdate(likedPost, { likes: likeCount - 1 })
-        User.findByIdAndUpdate(req.body.userId, { likedPosts: likedPosts.splice(arrayIndex, 1) },
-            function (err, docs) {
-                if (err) {
-                    return res.send({
-                        success: false,
-                        message: 'Error: Server error'
-                    })
-                }
-                else {
-                    return res.send({
-                        success: true,
-                        message: 'Liked Revoked!'
-                    })
-                }
-            });
-    }
 
 })
+
+//Updating values in Post and User database
+const updateForLikes = (likedPosts, likedPost, userId, likeCount, req, res) => {
+    console.log('update for likes')
+    let success = false
+    let message = ''
+    let index = likedPosts.indexOf(likedPost)
+    if (index < 0) {
+        console.log('index less than 0')
+        Post.findByIdAndUpdate(likedPost, { likes: likeCount + 1 },
+            function (err, docs) {
+                if (err) {
+                    message = 'Error: Server error '
+                }
+                else {
+                    success = true
+                    message = 'Added Like for post'
+                }
+            }).then(() => {
+                User.findByIdAndUpdate(userId, { likedPosts: [...likedPosts, likedPost] },
+                    function (err, docs) {
+                        if (err) {
+                            success = false
+                            message = message + ('- Error: Server error')
+                            
+                        }
+                        else {
+                            success = true && success
+                            message = message + ('- Like added for user!')
+                        }
+                        sendOff(res, message, success)
+                    });
+            })
+
+
+    } else {
+        console.log('index greater than 0')
+        Post.findByIdAndUpdate(likedPost, { likes: likeCount - 1 },
+            function (err, docs) {
+                if (err) {
+                    message = 'Error: Server error '
+                }
+                else {
+                    success = true
+                    message = 'like revoked for post '
+                }
+            }).then(() => {
+                let newArray = likedPosts.splice(index, 1)
+                User.findByIdAndUpdate(userId, { likedPosts: newArray },
+                    function (err, docs) {
+                        if (err) {
+                            success = false
+                            message = message + ('Error: Server error')
+                        }
+                        else {
+                            success = true && success
+                            message = message + ('Like revoked for user!')
+                        }
+                        console.log('send off 2')
+                        sendOff(res, message, success)
+                    });
+            })
+
+    }
+
+
+    // if (message.length > 0) {
+    //     return res.send({
+    //         success: success,
+    //         message: message
+    //     })
+    // }
+}
+
+const sendOff = (res, message, success) => {
+    return res.send({
+        success: success,
+        message: message
+    })
+}
+
 
 const verifyUser = (token) => {
     return UserSession.find({

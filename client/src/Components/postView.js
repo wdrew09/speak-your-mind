@@ -40,7 +40,8 @@ const PostView = props => {
         console.log(props.token)
         axiosInstance.patch('/posts/like/' + postId, {
             userId: props.userId,
-            token: props.token
+            token: props.token,
+            postId: postId
         }).then(response => {
             console.log(response)
         })

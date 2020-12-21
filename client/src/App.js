@@ -10,14 +10,11 @@ import Login from "./Components/login";
 import AccountView from "./Components/accountView";
 import PostView from "./Components/postView";
 import SignUp from "./Components/signUp";
-import PageNotFound from './Components/pageNotFound';
 import CreatePost from './Components/createPost';
+import MessagePage from './Components/messagePage';
 
 import * as actionCreators from './store/actions/index';
 import { connect } from 'react-redux';
-
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function App(props) {
   const [authorized, setAuthorized] = useState()
@@ -48,18 +45,32 @@ function App(props) {
     <Router>
 
       <div className="container">
-        <Navbar />
-        <br />
-        <Switch>
-          <Route path="/" exact component={Login} />
-          <Route path="/posts" component={PostView} />
-          <Route path="/account" component={AccountView} />
-          <Route path="/sign-up" component={SignUp} />
-          <Route path="/create-post" component={CreatePost} />
-          <Route>{PageNotFound}</Route>
-        </Switch>
+        {authorized ?
+          <div>
+            <Navbar />
+            <br />
+            <Switch>
+              <Route path="/" exact ><MessagePage message={"You are already logged in!"}/></Route>
+              <Route path="/posts" component={PostView} />
+              <Route path="/account" component={AccountView} />
+              <Route path="/sign-up" ><MessagePage message={"Please log out before creating a new account!"}/></Route>
+              <Route path="/create-post" component={CreatePost} />
+              <Route ><MessagePage message={"Page not found"}/></Route>
+            </Switch>
+          </div>
+          :
+          <div>
+            <Switch>
+              <Route path="/" exact component={Login} />
+              <Route path="/posts" ><MessagePage message={"You are not authorized to use this page. Please login."}/></Route>
+              <Route path="/account" ><MessagePage message={"You are not authorized to use this page. Please login."}/></Route>
+              <Route path="/sign-up" component={SignUp} />
+              <Route path="/create-post" ><MessagePage message={"You are not authorized to use this page. Please login."}/></Route>
+              <Route ><MessagePage message={"Page not found"}/></Route>
+            </Switch>
+          </div>
+        }
       </div>
-      {authorized === false && <Redirect to='/' component={Login} />}
 
     </Router>
   );
@@ -76,5 +87,3 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-// export default App;
