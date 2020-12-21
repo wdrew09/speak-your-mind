@@ -11,7 +11,12 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const uri = process.env.ATLAS_URI
+let uri = ''
+if (process.env.NODE_ENV === 'production') {
+    uri = process.env.PRODUCTION
+} else {
+   uri = process.env.ATLAS_URI
+}
 mongoose.connect(uri, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true})
 
 const connection = mongoose.connection
