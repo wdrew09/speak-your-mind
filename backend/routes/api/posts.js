@@ -1,6 +1,6 @@
 const router = require('express').Router()
 let Post = require('../../models/post')
-const UserSession = require('../../models/UserSession')
+const UserSession = require('../../models/userSession')
 let User = require('../../models/user')
 const user = require('../../models/user')
 

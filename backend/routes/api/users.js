@@ -1,6 +1,6 @@
 const router = require('express').Router()
 let User = require('../../models/user')
-const UserSession = require('../../models/UserSession')
+const UserSession = require('../../models/userSession')
 
 //Get a list of all users
 router.route('/').get((req, res) => {
