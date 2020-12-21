@@ -13,7 +13,8 @@ app.use(express.json())
 // PRODUCTION
 let uri = ''
 if (process.env.NODE_ENV === 'production') {
-    uri = process.env.PRODUCTION
+    // uri = process.env.PRODUCTION
+    uri = process.env.ATLAS_URI
 } else {
    uri = process.env.ATLAS_URI
 }
