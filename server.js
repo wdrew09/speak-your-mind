@@ -10,7 +10,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
-
+// PRODUCTION
 let uri = ''
 if (process.env.NODE_ENV === 'production') {
     uri = process.env.PRODUCTION
