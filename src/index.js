@@ -14,7 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export const BASE_URL = 'https://speak-your-mind.netlify.app/api/';
+export const BASE_URL = 'https://speak-your-mind.herokuapp.com/api/';
 
 export const axiosInstance = axios.create({
   baseURL: BASE_URL,
