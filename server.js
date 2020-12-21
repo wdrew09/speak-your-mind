@@ -19,22 +19,19 @@ connection.once('open', () => {
     console.log("MongoDB database connection established succesfully")
 })
 
-const userRouter = require('./routes/api/users')
-const postRouter = require('./routes/api/posts')
+const userRouter = require('./backend/routes/api/users')
+const postRouter = require('./backend/routes/api/posts')
 
 app.use('/api/account', userRouter)
 app.use('/api/posts', postRouter)
 
-
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('../build'))
+    app.use(express.static('build'))
 
     app.get('*', (req, res) => {
-
+        res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
     })
 }
-
-
 
 const port = process.env.PORT || 5000
 
