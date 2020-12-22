@@ -4,6 +4,7 @@ import { axiosInstance } from '../index';
 
 import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
+import './login.css'
 
 const Login = props => {
     const [username, setUsername] = useState()
@@ -30,21 +31,55 @@ const Login = props => {
         }
     }
 
+    // {/* login
+    // username
+    // <input type="text" onChange={(e) => setUsername(e.target.value)} />
+    // <br />
+    // <br />
+    // <br />
+    // password
+    // <input type="password" onChange={(e) => setPassword(e.target.value)} />
+    // <br />
+    // <br />
+    // <br />
+    // <button onClick={() => submit()} >login</button> */}
+    // {/* <div class="left-side">
+    //     SPEAK
+    //     <br />
+    //     YOUR
+    //     <br />
+    //     MIND
+    // </div> */}
+
     return (
-        <div>
-            {goToPosts && <Redirect to='/posts' />}
-            login
-            username
-            <input type="text" onChange={(e) => setUsername(e.target.value)} />
-            <br />
-            <br />
-            <br />
-            password
-            <input type="password" onChange={(e) => setPassword(e.target.value)} />
-            <br />
-            <br />
-            <br />
-            <button onClick={() => submit()} >login</button>
+        <div class="main">
+            <div class="left-side">
+                Speak
+                <br />
+                Your
+                <br />
+                Mind
+            </div>
+            <div class="right-side">
+                {goToPosts && <Redirect to='/posts' />}
+                <div class="col-md-6 login-form-1">
+                    <h3>Sign In</h3>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Username" value="" />
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Password" value="" />
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btnSubmit" value="Login" />
+                        </div>
+                        <div class="form-group">
+                            <a href="#" class="ForgetPwd">Sign Up</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     )
 }

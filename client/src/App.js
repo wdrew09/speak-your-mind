@@ -39,7 +39,7 @@ function App(props) {
 
   return (
     <Router>
-      <div className="container">
+      <div>
         {authorized ?
           <div>
             <Navbar />

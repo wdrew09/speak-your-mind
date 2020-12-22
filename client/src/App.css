@@ -1,3 +1,9 @@
+.containe {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
 .App {
   text-align: center;
 }
