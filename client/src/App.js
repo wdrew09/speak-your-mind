@@ -15,10 +15,11 @@ import MessagePage from './Container/messagePage';
 import { connect } from 'react-redux';
 
 function App(props) {
-  const [authorized, setAuthorized] = useState()
+  const [authorized, setAuthorized] = useState(true)
 
 
   useEffect(() => {
+    console.log(props.token)
     if (props.token) {
       axiosInstance.get('account/verify?token=' + props.token)
         .then(response => {

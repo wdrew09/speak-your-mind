@@ -1,0 +1,37 @@
+.Main {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.Leftside {
+    width: 70%;
+    background-color: #3579f6;
+    color: white;
+    font-size: 6vw;
+    font-weight: 800;
+    padding-left: 1%;
+}
+
+.Rightside {
+    position: relative;
+    width: 100%;
+    margin: 100px auto;
+}
+
+.LoginContainer {
+    right: 15%;
+    width: 70%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.Title {
+    font-size: 100%;
+    margin: auto;
+    margin-left: auto;
+}

@@ -4,11 +4,13 @@ import { axiosInstance } from '../index';
 
 import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
-import './login.css'
+import './login.css';
+
+import { Form, Button, InputGroup } from 'react-bootstrap';
 
 const Login = props => {
-    const [username, setUsername] = useState()
-    const [password, setPassword] = useState()
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
     const [goToPosts, setGoToPosts] = useState(false)
 
     //If token can be verified then go to posts page
@@ -25,60 +27,47 @@ const Login = props => {
     }, [props.token])
 
 
-    const submit = () => {
+    const submit = (e) => {
+        e.preventDefault();
+        console.log(username, password)
         if (username && password) {
+            console.log(username, password)
             props.login(username, password)
         }
     }
 
-    // {/* login
-    // username
-    // <input type="text" onChange={(e) => setUsername(e.target.value)} />
-    // <br />
-    // <br />
-    // <br />
-    // password
-    // <input type="password" onChange={(e) => setPassword(e.target.value)} />
-    // <br />
-    // <br />
-    // <br />
-    // <button onClick={() => submit()} >login</button> */}
-    // {/* <div class="left-side">
-    //     SPEAK
-    //     <br />
-    //     YOUR
-    //     <br />
-    //     MIND
-    // </div> */}
-
     return (
-        <div class="main">
-            <div class="left-side">
+        <div className="Main">
+            {goToPosts && <Redirect to='/posts' />}
+            <div className="Leftside">
                 Speak
                 <br />
                 Your
                 <br />
                 Mind
             </div>
-            <div class="right-side">
-                {goToPosts && <Redirect to='/posts' />}
-                <div class="col-md-6 login-form-1">
-                    <h3>Sign In</h3>
-                    <form>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Username" value="" />
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" placeholder="Password" value="" />
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" class="btnSubmit" value="Login" />
-                        </div>
-                        <div class="form-group">
-                            <a href="#" class="ForgetPwd">Sign Up</a>
-                        </div>
-                    </form>
+            <div className="Rightside">
+                <div className="LoginContainer">
+                <span className="Title">Login</span>
+                    <Form style={{marginTop: '10px'}}>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type="text" placeholder="Enter Username" onChange={(e) => setUsername(e.target.value)}/>
+                        </Form.Group>
+
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Enter Password" onChange={(e) => setPassword(e.target.value)}/>
+                        </Form.Group>
+                        <Button variant="primary" type="submit" style={{ backgroundColor: '#3579f6', border: 'none' }} onClick={(e) => submit(e)}>
+                            Sign In
+                        </Button>
+                        <Form.Text className="text-muted" style={{ marginTop: '2%'}}>
+                        <a href="/sign-up" className="ForgetPwd">Sign Up</a>
+                        </Form.Text>
+                    </Form>
                 </div>
+
             </div>
         </div>
     )

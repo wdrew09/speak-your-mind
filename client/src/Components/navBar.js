@@ -2,33 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actionCreators from '../store/actions/index';
-import { axiosInstance } from '../index';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { Button, Nav, Navbar, Form } from 'react-bootstrap';
 
-const Navbar = (props) => {
+const Navigationbar = (props) => {
+    //when user logs out redirect to login page
     const [goToLogin, setGoToLogin] = useState(false)
-    const [authorized, setAuthorized] = useState()
 
-
-    useEffect(() => {
-        if (props.token) {
-            axiosInstance.get('account/verify?token=' + props.token)
-                .then(response => {
-                    if (response.data.success) {
-                        setAuthorized(true)
-                        // props.setAlert('logged in', 'success')
-                    } else {
-                        setAuthorized(false)
-                    }
-                });
-        } else {
-            setAuthorized(false)
-        }
-    }, [props.token])
-
+    //Checking for when the toast message changes, displays it if so
     useEffect(() => {
         if (props.style == 'success') {
             toast.success(props.message)
@@ -39,68 +23,40 @@ const Navbar = (props) => {
         }
     }, [props.message])
 
+    //logout pressed
     const onLogout = () => {
         props.logout()
-        if (props.token.length === 0) {
-            setGoToLogin(true)
-        } else {
-            console.log('logout error')
-        }
+        setGoToLogin(true)
     }
 
-
-    // const notify = (message, style) => {
-    //     if (style == 'success') {
-    //         return toast.success(message)
-    //     } else if (style == 'error') {
-    //         return toast.error(message)
-    //     } else if (style == 'info') {
-    //         return toast.info(message)
-    //     }
-    // }
-
-    if (authorized === true) {
-        return (
-            <nav className="navbar navbar-dark bg-dark navbar-expand-lg">
-                {goToLogin && <Redirect to='/' />}
-                <ToastContainer
-                    position="top-center"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
-                <Link to="/" className="navbar-brand">a</Link>
-                <div className="collpase navbar-collapse">
-                    <ul className="navbar-nav mr-auto">
-                        <li className="navbar-item">
-                            <Link to="/account" className="nav-link">account</Link>
-                        </li>
-                        <li className="navbar-item">
-                            <Link to="/posts" className="nav-link">posts</Link>
-                        </li>
-                        <li className="navbar-item">
-                            <Link to="/create-post" className="nav-link">create post</Link>
-                        </li>
-                        <li className="navbar-item">
-                            <button style={{ height: '50px', width: '100px', color: 'blue' }} onClick={() => onLogout()}>Logout</button>
-                        </li>
-                        {/* <li className="navbar-item">
-                            <button style={{ height: '50px', width: '100px', color: 'blue' }} onClick={() => notify()}>notify</button>
-                        </li> */}
-                    </ul>
-                </div>
-            </nav>
-
-        );
-    } else {
-        return (<div />)
-    }
-
+    return (
+        <Navbar bg="primary" expand="lg">
+            {goToLogin && <Redirect to='/' />}
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+            <Navbar.Brand href="/posts" className="text-light" size="lg">Speak-Your-Mind</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                    <Nav.Link href="/account" className="text-light">My Account</Nav.Link>
+                    <Nav.Link href="/posts" className="text-light">Posts</Nav.Link>
+                    <Nav.Link href="/create-post" className="text-light">Create Post +</Nav.Link>
+                </Nav>
+                <Form inline>
+                    <Button className="text-primary" variant="light" onClick={() => onLogout()}>Logout</Button>
+                </Form>
+            </Navbar.Collapse>
+        </Navbar>
+    );
 }
 
 const mapStateToProps = (state) => ({
@@ -109,7 +65,6 @@ const mapStateToProps = (state) => ({
     style: state.alert.style
 });
 
-
 const mapDispatchToProps = (dispatch) => {
     return {
         logout: () => dispatch(actionCreators.logout()),
@@ -117,4 +72,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navigationbar);
