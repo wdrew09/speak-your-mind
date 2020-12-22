@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
-import { Redirect } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { axiosInstance } from './index';
 
 import Navbar from "./Components/navBar"
-import Login from "./Components/login";
-import AccountView from "./Components/accountView";
-import PostView from "./Components/postView";
-import SignUp from "./Components/signUp";
-import CreatePost from './Components/createPost';
-import MessagePage from './Components/messagePage';
+import Login from "./Container/login";
+import AccountView from "./Container/accountView";
+import PostView from "./Container/postView";
+import SignUp from "./Container/signUp";
+import CreatePost from './Container/createPost';
+import MessagePage from './Container/messagePage';
 
-import * as actionCreators from './store/actions/index';
 import { connect } from 'react-redux';
 
 function App(props) {
@@ -21,7 +19,6 @@ function App(props) {
 
 
   useEffect(() => {
-    console.log(props.token)
     if (props.token) {
       axiosInstance.get('account/verify?token=' + props.token)
         .then(response => {
@@ -40,10 +37,8 @@ function App(props) {
 
 
 
-  console.log(authorized)
   return (
     <Router>
-
       <div className="container">
         {authorized ?
           <div>

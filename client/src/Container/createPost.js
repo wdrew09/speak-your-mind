@@ -16,7 +16,8 @@ const CreatePost = (props) => {
                 title: title,
                 content: content,
                 userId: props.userId,
-                username: props.username
+                username: props.username,
+                token: props.token
             })
                 .then(response => {
                     if (response.data.success) {
@@ -40,7 +41,8 @@ const CreatePost = (props) => {
 const mapStateToProps = (state) => {
     return {
         userId: state.auth.userId,
-        username: state.auth.username
+        username: state.auth.username,
+        token: state.auth.token
     };
 }
 

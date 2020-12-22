@@ -12,7 +12,15 @@ router.route('/').get((req, res) => {
 
 //create a post
 router.route('/add').post((req, res) => {
-    console.log('add post')
+
+    let verified = verifyUser(req.body.token)
+    if (!verified) {
+        return res.send({
+            success: false,
+            message: 'Invalid Token'
+        })
+    }
+
     const username = req.body.username
     const userId = req.body.userId
     const title = req.body.title
@@ -41,7 +49,6 @@ router.route('/add').post((req, res) => {
 
 //Like a post
 router.route('/like/:id').patch((req, res) => {
-    console.log('like/:id')
     //Making sure user has session token
     let verified = verifyUser(req.body.token)
     if (!verified) {
@@ -57,30 +64,25 @@ router.route('/like/:id').patch((req, res) => {
     let likedPosts = []
     User.findById(req.body.userId)
         .then(user => {
-            console.log('likedposts', user.likedPosts)
             likedPosts = user.likedPosts
-        })
 
-    //Finding like count for the post and then calling updateForLikes
-    let likeCount = 0
-    Post.findById(likedPost)
-        .then(post => {
-            console.log('title', post.title)
-            likeCount = post.likes
-            updateForLikes(likedPosts, likedPost, req.body.userId, likeCount, req, res)
+            //Finding like count for the post and then calling updateForLikes
+            let likeCount = 0
+            Post.findById(likedPost)
+                .then(post => {
+                    likeCount = post.likes
+                    updateForLikes(likedPosts, likedPost, req.body.userId, likeCount, req, res)
+                })
         })
-
 
 })
 
 //Updating values in Post and User database
 const updateForLikes = (likedPosts, likedPost, userId, likeCount, req, res) => {
-    console.log('update for likes')
     let success = false
     let message = ''
     let index = likedPosts.indexOf(likedPost)
     if (index < 0) {
-        console.log('index less than 0')
         Post.findByIdAndUpdate(likedPost, { likes: likeCount + 1 },
             function (err, docs) {
                 if (err) {
@@ -96,7 +98,7 @@ const updateForLikes = (likedPosts, likedPost, userId, likeCount, req, res) => {
                         if (err) {
                             success = false
                             message = message + ('- Error: Server error')
-                            
+
                         }
                         else {
                             success = true && success
@@ -105,10 +107,7 @@ const updateForLikes = (likedPosts, likedPost, userId, likeCount, req, res) => {
                         sendOff(res, message, success)
                     });
             })
-
-
     } else {
-        console.log('index greater than 0')
         Post.findByIdAndUpdate(likedPost, { likes: likeCount - 1 },
             function (err, docs) {
                 if (err) {
@@ -119,7 +118,7 @@ const updateForLikes = (likedPosts, likedPost, userId, likeCount, req, res) => {
                     message = 'like revoked for post '
                 }
             }).then(() => {
-                let newArray = likedPosts.splice(index, 1)
+                let newArray = likedPosts.filter(val => val !== likedPost)
                 User.findByIdAndUpdate(userId, { likedPosts: newArray },
                     function (err, docs) {
                         if (err) {
@@ -130,50 +129,100 @@ const updateForLikes = (likedPosts, likedPost, userId, likeCount, req, res) => {
                             success = true && success
                             message = message + ('Like revoked for user!')
                         }
-                        console.log('send off 2')
                         sendOff(res, message, success)
                     });
             })
 
     }
-
-
-    // if (message.length > 0) {
-    //     return res.send({
-    //         success: success,
-    //         message: message
-    //     })
-    // }
 }
 
-const sendOff = (res, message, success) => {
-    return res.send({
-        success: success,
-        message: message
-    })
+router.route('/dislike/:id').patch((req, res) => {
+    //Making sure user has session token
+    let verified = verifyUser(req.body.token)
+    if (!verified) {
+        return res.send({
+            success: false,
+            message: 'Invalid Token'
+        })
+    }
+
+    let dislikedPost = req.params.id
+
+    //Finding the users dislikes
+    let dislikedPosts = []
+    User.findById(req.body.userId)
+        .then(user => {
+            dislikedPosts = user.dislikedPosts
+
+            //Finding dislike count for the post and then calling updateForDislikes
+            let dislikeCount = 0
+            Post.findById(dislikedPost)
+                .then(post => {
+                    dislikeCount = post.dislikes
+                    updateForDislikes(dislikedPosts, dislikedPost, req.body.userId, dislikeCount, req, res)
+                })
+        })
+
+})
+
+//Updating values in Post and User database
+const updateForDislikes = (dislikedPosts, dislikedPost, userId, dislikeCount, req, res) => {
+    let success = false
+    let message = ''
+    let index = dislikedPosts.indexOf(dislikedPost)
+    if (index < 0) {
+        Post.findByIdAndUpdate(dislikedPost, { dislikes: dislikeCount + 1 },
+            function (err, docs) {
+                if (err) {
+                    message = 'Error: Server error '
+                }
+                else {
+                    success = true
+                    message = 'Added Dislike for post'
+                }
+            }).then(() => {
+                User.findByIdAndUpdate(userId, { dislikedPosts: [...dislikedPosts, dislikedPost] },
+                    function (err, docs) {
+                        if (err) {
+                            success = false
+                            message = message + ('- Error: Server error')
+
+                        }
+                        else {
+                            success = true && success
+                            message = message + ('- Dislike added for user!')
+                        }
+                        sendOff(res, message, success)
+                    });
+            })
+    } else {
+        Post.findByIdAndUpdate(dislikedPost, { dislikes: dislikeCount - 1 },
+            function (err, docs) {
+                if (err) {
+                    message = 'Error: Server error '
+                }
+                else {
+                    success = true
+                    message = 'dislike revoked for post '
+                }
+            }).then(() => {
+                let newArray = dislikedPosts.filter(val => val !== dislikedPost)
+                User.findByIdAndUpdate(userId, { dislikedPosts: newArray },
+                    function (err, docs) {
+                        if (err) {
+                            success = false
+                            message = message + ('Error: Server error')
+                        }
+                        else {
+                            success = true && success
+                            message = message + ('Dislike revoked for user!')
+                        }
+                        sendOff(res, message, success)
+                    });
+            })
+
+    }
 }
-
-
-const verifyUser = (token) => {
-    return UserSession.find({
-        _id: token,
-        isDeleted: false
-    }, (err, sessions) => {
-        if (err) {
-            console.log(err)
-            return false
-        }
-        if (sessions.length != 1) {
-            console.log('too many sessions')
-            return false
-        } else {
-            console.log('valid')
-            return true
-        }
-    })
-}
-
-
 
 //delete a post
 router.route('/delete/:id').delete((req, res) => {
@@ -196,6 +245,32 @@ router.route('/delete/:id').delete((req, res) => {
         })
     })
 })
+
+const sendOff = (res, message, success) => {
+    return res.send({
+        success: success,
+        message: message
+    })
+}
+
+const verifyUser = (token) => {
+    return UserSession.find({
+        _id: token,
+        isDeleted: false
+    }, (err, sessions) => {
+        if (err) {
+            console.log(err)
+            return false
+        }
+        if (sessions.length != 1) {
+            console.log('too many sessions')
+            return false
+        } else {
+            console.log('valid')
+            return true
+        }
+    })
+}
 
 
 module.exports = router;

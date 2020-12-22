@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const path = require('path')
+const bodyParser = require('body-parser')
 
 require('dotenv').config()
 
@@ -12,6 +13,8 @@ app.use(express.json())
 
 let uri = process.env.ATLAS_URI
 mongoose.connect(uri, {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true})
+
+app.use(bodyParser.json());
 
 const connection = mongoose.connection
 connection.once('open', () => {

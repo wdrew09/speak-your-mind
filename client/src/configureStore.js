@@ -14,6 +14,7 @@ const rootReducer = combineReducers({
 const persistConfig = { // configuration object for redux-persist
     key: 'root',
     storage, // define which storage to use
+    blacklist: ['alert'] //Alert reducer will not be persisted
 }
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

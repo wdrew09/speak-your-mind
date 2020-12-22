@@ -9,6 +9,17 @@ router.route('/').get((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err))
 })
 
+router.route('/info').post((req, res) => {
+    User.findById(req.body.userId)
+        .then(user => {
+            console.log('user', user)
+            return res.send({
+                success: true,
+                user: user
+            })
+        })
+})
+
 //sign up a user
 router.route('/create').post((req, res) => {
     const { body } = req
