@@ -12,44 +12,44 @@ const MyLikes = props => {
     const [user, setUser] = useState()
     const [render, setRender] = useState(false)
 
+    //Getting posts on page load
     useEffect(() => {
         axiosInstance.get('posts/')
             .then(response => {
                 if (response.data.length > 0) {
-                    console.log(response.data)
                     let sorted = response.data.sort((a, b) => { return (new Date(b.date) - new Date(a.date)) })
                     setPostsList(sorted)
                 } else {
-                    console.log('error retrieving posts')
+                    props.setAlert('Error retrieving posts...', 'error')
                 }
             })
-        getLikedAndDisliked()
+        getUserInfo()
     }, [])
 
-    const getLikedAndDisliked = () => {
+    //Getting info for user
+    const getUserInfo = () => {
         axiosInstance.post('account/info', {
             userId: props.userId
         })
             .then(response => {
-                console.log(response)
                 if (response.data.success) {
-                    console.log(response.data.user)
                     setUser(response.data.user)
                 } else {
-                    console.log('error retrieving user info')
+                    props.setAlert('Error retrieving user data...', 'error')
                 }
             })
     }
 
+    //Logic for filtering
     const postFilter = (filterType) => {
         let unfilteredList = postsList
-        if (filterType == 'popular') {
+        if (filterType === 'popular') {
             unfilteredList.sort((a, b) => { return (b.likes - a.likes) })
-        } else if (filterType == 'contraversal') {
+        } else if (filterType === 'contraversal') {
             unfilteredList.sort((a, b) => { return (b.dislikes - a.dislikes) })
-        } else if (filterType == 'oldest') {
+        } else if (filterType === 'oldest') {
             unfilteredList.sort((a, b) => { return (new Date(a.date) - new Date(b.date)) })
-        } else if (filterType == 'newest') {
+        } else if (filterType === 'newest') {
             unfilteredList.sort((a, b) => { return (new Date(b.date) - new Date(a.date)) })
         }
         setPostsList(unfilteredList)

@@ -4,7 +4,7 @@ import { axiosInstance } from '../index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeartBroken, faHeart } from '@fortawesome/free-solid-svg-icons'
 
-import { Card, Button } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 
 const PostItem = props => {
     const {

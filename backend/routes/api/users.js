@@ -12,7 +12,6 @@ router.route('/').get((req, res) => {
 router.route('/info').post((req, res) => {
     User.findById(req.body.userId)
         .then(user => {
-            console.log('user', user)
             return res.send({
                 success: true,
                 user: user
@@ -44,13 +43,11 @@ router.route('/create').post((req, res) => {
         username: username
     }, (err, previousUsers) => {
         if (err) {
-            console.log('46 err', err)
             return res.send({
                 success: false,
                 message: 'Error: server error'
             })
         } else if (previousUsers.length > 0) {
-            console.log('username already in use')
             return res.send({
                 success: false,
                 message: 'Error: account already exists'
@@ -63,13 +60,11 @@ router.route('/create').post((req, res) => {
         newUser.password = newUser.generateHash(password)
         newUser.save((err, user) => {
             if (err) {
-                console.log('err line 52', err)
                 return res.send({
                     success: false,
                     message: 'Error: server error'
                 })
             }
-            console.log('successful creation of user')
             return res.send({
                 success: true,
                 message: 'Signed up'
@@ -86,7 +81,6 @@ router.route('/login').post((req, res) => {
         username,
         password
     } = body
-    console.log(username, password)
 
     if (!username) {
         return res.send({
@@ -107,13 +101,13 @@ router.route('/login').post((req, res) => {
         if (err) {
             return res.send({
                 success: false,
-                message: 'Server error 1'
+                message: 'Server error'
             })
         }
         if (users.length != 1) {
             return res.send({
                 success: false,
-                message: 'Invalid Username'
+                message: 'Invalid Username or Password'
             })
         }
 
@@ -121,7 +115,7 @@ router.route('/login').post((req, res) => {
         if (!user.validPassword(password)) {
             return res.send({
                 success: false,
-                message: 'Invalid Password'
+                message: 'Invalid Username or Password'
             })
         }
 
@@ -131,11 +125,10 @@ router.route('/login').post((req, res) => {
             if (err) {
                 return res.send({
                     success: false,
-                    message: 'Server error 2:'
+                    message: 'Server error'
                 })
             }
 
-            console.log(doc)
             return res.send({
                 success: true,
                 message: 'Valid sign in',
@@ -148,9 +141,12 @@ router.route('/login').post((req, res) => {
 
 //logout a user
 router.route('/logout').get((req, res) => {
+    logout(req, res)
+})
+
+const logout = (req, res) => {
     const { query } = req
     const { token } = query
-    console.log('logout')
     UserSession.findOneAndUpdate({
         _id: token,
         isDeleted: false
@@ -160,21 +156,18 @@ router.route('/logout').get((req, res) => {
         }
     }, null, (err, sessions) => {
         if (err) {
-            console.log('err', err)
             return res.send({
                 success: false,
                 message: 'Error: Server error'
             })
         }
-        console.log('good')
-        // localStorage.clear()
         return res.send({
             success: true,
             message: 'Good'
         })
 
     })
-})
+}
 
 //Verify user
 router.route('/verify').get((req, res) => {
@@ -232,13 +225,13 @@ router.route('/delete').post((req, res) => {
         if (err) {
             return res.send({
                 success: false,
-                message: 'Server error 1'
+                message: 'Server error...'
             })
         }
         if (users.length != 1) {
             return res.send({
                 success: false,
-                message: 'Invalid Username'
+                message: 'Invalid Username or Password'
             })
         }
 
@@ -246,7 +239,7 @@ router.route('/delete').post((req, res) => {
         if (!user.validPassword(password)) {
             return res.send({
                 success: false,
-                message: 'Invalid Password'
+                message: 'Invalid Username or Password'
             })
         }
 
@@ -256,13 +249,13 @@ router.route('/delete').post((req, res) => {
             if (err) {
                 return res.send({
                     success: false,
-                    message: 'Server error 2:'
+                    message: 'Server error...'
                 })
             }
 
             return res.send({
                 success: true,
-                message: 'User Removed',
+                message: 'Account Deleted.',
             })
         })
     })

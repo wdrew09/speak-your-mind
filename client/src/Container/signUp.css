@@ -1,13 +1,13 @@
 .Main {
     height: 100vh;
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 30% 70%;
     width: 100%;
     justify-content: flex-start;
 }
 
 .Leftside {
-    width: 70%;
+    width: 100%;
     background-color: #3579f6;
     color: white;
     font-size: 6vw;
@@ -19,19 +19,51 @@
     position: relative;
     width: 100%;
     margin: 100px auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .LoginContainer {
-    right: 15%;
-    width: 70%;
+    width: 100%;
+    max-width: 600px;
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
     padding: 25px;
     display: flex;
     flex-direction: column;
+    height: max-content;
+    align-self: center;
+    
 }
 
 .Title {
     font-size: 100%;
     margin: auto;
     margin-left: auto;
+}
+
+.MobileTitle {
+    display: none;
+}
+
+@media screen and (max-width: 1000px) {
+    .Main {
+        grid-template-columns: 0% 100%;
+    }
+
+    .LoginContainer {
+        width: 90vw;
+    }
+
+    .MobileTitle {
+        display: flex;
+        align-self: center;
+        margin-top: 50px;
+        margin-bottom: 20px;
+        font-size: 6vw;
+        color: #3579f6;
+    }
+
+    .Rightside {
+        margin: 0px;
+    }
 }

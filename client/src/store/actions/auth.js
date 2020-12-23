@@ -1,6 +1,8 @@
 import * as actionTypes from './actionTypes';
 import { axiosInstance } from '../../index';
 
+import setAlert from './alert'
+
 import {
     setInStorage,
     getFromStorage
@@ -12,21 +14,19 @@ export const login = (username, password) => {
             username: username,
             password: password,
         }).then(response => {
-            console.log(response)
             if (response.data.success) {
                 setInStorage('speak_your_mind', { token: response.data.token })
                 let token = response.data.token;
                 let userId = response.data.userId
                 dispatch(setLogin(token, userId, username))
             } else {
-
+                dispatch(setAlert(response.data.message, 'error'))
             }
         });
     };
 }
 
 export const setLogin = (token, userId, username) => {
-    console.log(token, userId)
     return {
         type: actionTypes.SET_LOGIN,
         token: token,
@@ -38,7 +38,6 @@ export const setLogin = (token, userId, username) => {
 export const logout = () => {
     return dispatch => {
         let obj = getFromStorage('speak_your_mind')
-
         if (obj && obj.token) {
             let token = obj.token
             axiosInstance.get('account/logout?token=' + token)
@@ -47,11 +46,10 @@ export const logout = () => {
                         localStorage.removeItem('speak_your_mind')
                         dispatch(setLogout())
                     } else {
-                        console.log('error')
                     }
                 })
         } else {
-            console.log('No token found')
+            //Could not find token
         }
     }
 }

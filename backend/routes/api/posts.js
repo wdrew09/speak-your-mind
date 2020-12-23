@@ -259,14 +259,11 @@ const verifyUser = (token) => {
         isDeleted: false
     }, (err, sessions) => {
         if (err) {
-            console.log(err)
             return false
         }
         if (sessions.length != 1) {
-            console.log('too many sessions')
             return false
         } else {
-            console.log('valid')
             return true
         }
     })

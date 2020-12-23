@@ -10,7 +10,6 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case actionTypes.SET_LOGIN:
-            console.log(action.userId)
             return updateObject(state, {
                 token: action.token,
                 userId: action.userId,

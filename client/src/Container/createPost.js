@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link, Redirect } from 'react-router-dom';
 import { axiosInstance } from '../index';
 
 import { connect } from 'react-redux';
@@ -11,10 +10,10 @@ const CreatePost = (props) => {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
 
+    //When user presses submit
     const submitPressed = (e) => {
         e.preventDefault()
-        if (title && content) {
-            console.log(title, content, props.userId, props.username)
+        if (title.length > 0 && content.length > 0) {
             axiosInstance.post('posts/add', {
                 title: title,
                 content: content,
@@ -24,7 +23,6 @@ const CreatePost = (props) => {
             })
                 .then(response => {
                     if (response.data.success) {
-                        console.log('success')
                         props.setAlert('Post Added!', 'success')
                         setTitle('')
                         setContent('')
@@ -32,16 +30,13 @@ const CreatePost = (props) => {
                         props.setAlert('Error Adding post...', 'error')
                     }
                 });
+        } else {
+            props.setAlert('Must add title and content', 'error')
         }
     }
 
 
     return (
-        // <div>
-        //     <input placeholder={"Title"} onChange={(e) => setTitle(e.target.value)} />
-        //     <input placeholder={"Content"} onChange={(e) => setContent(e.target.value)} />
-        //     <button onClick={() => submitPressed()}>Submit</button>
-        // </div>
         <Form style={{width: '70%', marginLeft: '15%'}}>
             <Form.Group controlId="exampleForm.ControlInput1">
                 <Form.Label>Title</Form.Label>

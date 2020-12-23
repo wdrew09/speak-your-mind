@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { axiosInstance } from '../index';
 
 import { connect } from 'react-redux';
 import MyInfo from '../Components/myInfo'
@@ -11,10 +10,11 @@ import { ButtonGroup, Button } from 'react-bootstrap';
 const AccountView = props => {
     const [pageType, setPageType] = useState('likes')
 
+    //Deciding which page to render (likes, posts, info)
     const PageToRender = (props) => {
-        if (props.pageType == "likes") {
+        if (props.pageType === "likes") {
             return (<MyLikes />)
-        } else if (props.pageType == 'posts') {
+        } else if (props.pageType === 'posts') {
             return (<MyPosts />)
         } else {
             return (<MyInfo />)
