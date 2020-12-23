@@ -23,12 +23,11 @@ const AccountView = props => {
 
     return (
         <div>
-            <ButtonGroup aria-label="Basic example">
+            <ButtonGroup aria-label="Basic example" style={{marginLeft: '15%', marginBottom: '15px'}}>
                 <Button variant="secondary" onClick={() => setPageType('likes')}>My Likes</Button>
                 <Button variant="secondary" onClick={() => setPageType('posts')}>My Posts</Button>
                 <Button variant="secondary" onClick={() => setPageType('account')}>My Info</Button>
             </ButtonGroup>
-            {props.username}
             <PageToRender pageType={pageType} />
         </div>
     )

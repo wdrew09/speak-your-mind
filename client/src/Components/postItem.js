@@ -73,7 +73,6 @@ const PostItem = props => {
 
     //Determining if user has disliked a post to figure out the color
     const isDisliked = () => {
-        console.log(title, disliked)
         if (disliked.indexOf(postId) > -1) {
             return 'red'
         }
@@ -116,9 +115,9 @@ const PostItem = props => {
                     </Card.Text>
                 </Card.Body>
                 <Card.Text style={{ marginLeft: '15px' }}>
-                    <button onClick={() => likePost()} style={{ backgroundColor: 'transparent', border: 'none' }}><FontAwesomeIcon icon={faHeart} color={isLiked()} /></button>
+                    <button onClick={() => likePost()} style={{ backgroundColor: 'transparent', border: 'none', outline: 'none' }}><FontAwesomeIcon icon={faHeart} color={isLiked()} /></button>
                     {likeCount()}
-                    <button onClick={() => dislikePost()} style={{ backgroundColor: 'transparent', border: 'none', marginLeft: '10px' }}><FontAwesomeIcon icon={faHeartBroken} color={isDisliked()} /></button>
+                    <button onClick={() => dislikePost()} style={{ backgroundColor: 'transparent', border: 'none', marginLeft: '10px', outline: 'none' }}><FontAwesomeIcon icon={faHeartBroken} color={isDisliked()} /></button>
                     {dislikeCount()}
                 </Card.Text>
                 <footer className="blockquote-footer" style={{ padding: '10px' }}>
